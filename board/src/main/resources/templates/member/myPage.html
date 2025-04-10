@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout}">
+<div layout:fragment="content">
+  <section>
+    <div class="container page_title">
+      <div class="col-md-12">
+        <h1>情報編集</h1>
+      </div>
+    </div>
+
+    <div class="container myPageForm">
+      <div class="col-md-12">
+        <form name="infoChange" method="post" action="/members/infoChange">
+          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+          <table style="width:700px;">
+            <tr>
+              <th><label th:for="name">名前</label></th>
+              <td><input type="text" th:value="${member.name}" name="name"></td>
+            </tr>
+
+            <tr>
+              <th><label th:for="email">メール</label></th>
+              <td><input type="email" th:value="${member.email}" readonly></td>
+            </tr>
+
+            <tr>
+              <td colspan="2">
+                <button type="submit" name="infoChange">情報編集</button>
+                <button type="button" name="passwordChange" onclick="window.location.href='/members/passwordChk'">パスワード編集</button>
+                <button type="button" name="cancel" onclick="history.back()">キャンセル</button>
+              </td>
+            </tr>
+          </table>
+        </form>
+      </div>
+    </div>
+  </section>
+
+</div>
+</html>

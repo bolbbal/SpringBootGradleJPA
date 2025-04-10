@@ -21,15 +21,15 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .formLogin(formlogin -> formlogin
-                        .loginPage("/member/login")
+                        .loginPage("/members/login")
                         .usernameParameter("email")
-                        .failureUrl("/member/login/error")
+                        .failureUrl("/members/login/error")
                         .defaultSuccessUrl("/"))
                 .logout(logout -> logout
-                        .logoutRequestMatcher(new AntPathRequestMatcher("/member/logout"))
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/members/logout"))
                         .logoutSuccessUrl("/").invalidateHttpSession(true))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/member/login").permitAll()
+                        .requestMatchers("/members/login").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/board/write").authenticated()
                         .anyRequest().permitAll());

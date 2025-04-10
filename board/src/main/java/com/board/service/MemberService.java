@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -45,5 +46,35 @@ public class MemberService implements UserDetailsService {
                 .password(member.getPassword())
                 .roles(member.getRole().toString())
                 .build();
+    }
+
+    public Member MemberInfoByUsername(String email) throws UsernameNotFoundException {
+        return memberRepository.findByEmail(email);
+    }
+
+    @Transactional
+    public void updateMemberInfoByUsername(String email, String newName) throws UsernameNotFoundException {
+
+        Member member = memberRepository.findByEmail(email);
+
+        member.setName(newName);
+
+    }
+
+    public boolean passwordChkByUsername(String email, String password) throws UsernameNotFoundException {
+
+        Member member = memberRepository.findByEmail(email);
+
+        return passwordEncoder.matches(password, member.getPassword());
+
+    }
+
+    @Transactional
+    public void updatePasswordByUsername(String email, String newPassword) throws UsernameNotFoundException {
+
+        Member member = memberRepository.findByEmail(email);
+
+        member.setPassword(passwordEncoder.encode(newPassword));
+
     }
 }
