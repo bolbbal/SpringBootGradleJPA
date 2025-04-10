@@ -10,8 +10,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Log4j2
 @RequiredArgsConstructor
 public class MainController {
-    @GetMapping("")
+    @GetMapping({"","/"})
     public String main(Model model) {
+        System.out.println("a");
         return "main";
     }
 }

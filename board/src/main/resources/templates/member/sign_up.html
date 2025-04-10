@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout}">
+<div layout:fragment="content">
+  <section>
+    <div class="container page_title">
+      <div class="col-md-12">
+        <h1>新規登録</h1>
+      </div>
+    </div>
+
+    <div class="container signUpForm">
+      <div class="col-md-12">
+        <form name="signUp" method="post" action="/member/saveMember" th:object="${memberDto}">
+          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+          <table style="width:700px;">
+            <tr>
+              <th><label th:for="name">名前</label></th>
+              <td><input type="text" th:field="*{name}"></td>
+            </tr>
+
+            <tr>
+              <th><label th:for="email">メール</label></th>
+              <td><input type="email" th:field="*{email}"><button name="mailChk">認証番号送信</button></td>
+            </tr>
+
+            <tr>
+              <th><label th:for="certify">認証番号</label></th>
+              <td><input type="text" name="certify"><button name="certifyChk">認証番号確認</button></td>
+            </tr>
+
+            <tr>
+              <th><label th:for="password">パスワード</label></th>
+              <td><input type="password" th:field="*{password}"></td>
+            </tr>
+
+            <tr>
+              <th><label th:for="passwordChk">パスワード確認</label></th>
+              <td><input type="password" name="passwordChk"></td>
+            </tr>
+
+            <tr>
+              <td colspan="2"><button type="submit" name="save">登録</button><button type="button" name="cancel" onclick="history.back()">キャンセル</button></td>
+            </tr>
+          </table>
+        </form>
+      </div>
+    </div>
+  </section>
+
+</div>
+</html>

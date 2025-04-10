@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="layouts/layout">
+      layout:decorate="~{layouts/layout}">
 <div layout:fragment="content">
   <section>
-
     <div class="container page_title">
       <div class="col-md-12">
         <h1>ログイン</h1>
@@ -13,11 +12,12 @@
 
     <div class="container signInForm">
       <div class="col-md-12">
-        <form name="signIn" method="post">
+        <form name="login" method="post" action="/member/login">
+          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
           <table style="width:700px;">
             <tr>
               <th>メール</th>
-              <td><input name="mail" type="email"></td>
+              <td><input name="email" type="email"></td>
             </tr>
 
             <tr>
@@ -26,7 +26,7 @@
             </tr>
 
             <tr>
-              <td colspan="2"><button name="signIn">ログイン</button><button name="cancel" onclick="history.back()">キャンセル</button></td>
+              <td colspan="2"><button type="submit" name="login">ログイン</button><button type="button" name="cancel" onclick="history.back()">キャンセル</button></td>
             </tr>
           </table>
         </form>

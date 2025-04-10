@@ -3,21 +3,24 @@
   <div th:fragment="header">
     <div class="container">
       <div class="row">
-        <div class="col-md-1">
-          <a href="/user/signIn">ログイン</a>
-        </div>
+        <nav>
+          <div class="col-md-2">
+            <ul>
+              <li sec:authorize="isAnonymous()"><a href="/member/login">ログイン</a></li>
+              <li sec:authorize="isAnonymous()"><a href="/member/signUp">新規登録</a></li>
+              <li sec:authorize="isAuthenticated()"><a href="/member/logout">ログアウト</a></li>
+              <li sec:authorize="isAuthenticated()"><a href="/member/mypage">情報編集</a></li>
+            </ul>
+          </div>
 
-        <div class="col-md-1">
-          <a href="/user/signUp">新規登録</a>
-        </div>
+          <div class="col-md-8">
+            <input type="text">
+            <a>検索</a>
+          </div>
 
-        <div class="col-md-8">
-          <input type="text">
-          <a>検索</a>
-        </div>
-
-        <div class="col-md-2">
-        </div>
+          <div class="col-md-2">
+          </div>
+        </nav>
       </div>
     </div>
 
