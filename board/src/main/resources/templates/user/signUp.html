@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layouts/layout">
+<div layout:fragment="content">
+  <section>
+
+    <div class="container page_title">
+      <div class="col-md-12">
+        <h1>新規登録</h1>
+      </div>
+    </div>
+
+    <div class="container signUpForm">
+      <div class="col-md-12">
+        <form name="signUp" method="post">
+          <table style="width:700px;">
+            <tr>
+              <th>名前</th>
+              <td><input name="username" type="text"></td>
+            </tr>
+
+            <tr>
+              <th>ニックネーム</th>
+              <td><input name="nickname" type="text"></td>
+            </tr>
+
+            <tr>
+              <th>メール</th>
+              <td><input name="mail" type="email"><button name="mailChk">認証番号送信</button></td>
+            </tr>
+
+            <tr>
+              <th>認証番号</th>
+              <td><input name="certify" type="text"><button name="certifyChk">認証番号確認</button></td>
+            </tr>
+
+            <tr>
+              <th>パスワード</th>
+              <td><input name="password" type="password"></td>
+            </tr>
+
+            <tr>
+              <th>パスワード確認</th>
+              <td><input name="passwordChk" type="password"></td>
+            </tr>
+
+            <tr>
+              <td colspan="2"><button name="signUp">登録</button><button name="cancel" onclick="history.back()">キャンセル</button></td>
+            </tr>
+          </table>
+        </form>
+      </div>
+    </div>
+  </section>
+
+</div>
+</html>

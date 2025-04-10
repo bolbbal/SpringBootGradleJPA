@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layouts/layout">
+<div layout:fragment="content">
+  <section>
+
+    <div class="container page_title">
+      <div class="col-md-12">
+        <h1>ログイン</h1>
+      </div>
+    </div>
+
+    <div class="container signInForm">
+      <div class="col-md-12">
+        <form name="signIn" method="post">
+          <table style="width:700px;">
+            <tr>
+              <th>メール</th>
+              <td><input name="mail" type="email"></td>
+            </tr>
+
+            <tr>
+              <th>パスワード</th>
+              <td><input name="password" type="password"></td>
+            </tr>
+
+            <tr>
+              <td colspan="2"><button name="signIn">ログイン</button><button name="cancel" onclick="history.back()">キャンセル</button></td>
+            </tr>
+          </table>
+        </form>
+      </div>
+    </div>
+  </section>
+
+</div>
+</html>
