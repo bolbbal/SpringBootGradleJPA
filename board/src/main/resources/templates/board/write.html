@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout}">
+<div layout:fragment="content">
+  <section>
+    <div class="container page_title">
+      <div class="col-md-12">
+        <h1>投稿</h1>
+      </div>
+    </div>
+
+    <div class="container signUpForm">
+      <div class="col-md-12">
+        <form name="write" method="post" action="/boards/write">
+          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+          <table style="width:700px;">
+            <tr>
+              <th><label th:for="title">タイトル</label></th>
+              <td><input type="text" name="title"></td>
+            </tr>
+
+            <tr>
+              <th><label th:for="content">内容</label></th>
+              <td><textarea name="content"></textarea></td>
+            </tr>
+
+            <tr>
+              <td colspan="2"><button type="submit" name="save">登録</button><button type="button" name="cancel" onclick="history.back()">キャンセル</button></td>
+            </tr>
+          </table>
+        </form>
+      </div>
+    </div>
+  </section>
+
+</div>
+</html>

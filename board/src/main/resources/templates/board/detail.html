@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout}">
+<div layout:fragment="content">
+  <section>
+    <div class="container page_title">
+      <div class="col-md-12">
+        <h1>情報編集</h1>
+      </div>
+    </div>
+
+    <div class="container myPageForm">
+      <div class="col-md-12">
+        <h3>title</h3>
+        <div class="write-info">
+          <span>nickname</span>
+          <span>date</span>
+          <span>viewcount</span>
+          <span>likecount</span>
+          <span>commentcount</span>
+        </div>
+        <div class="container board-content">
+          <p>
+            content
+          </p>
+        </div>
+        <div class="container">
+          <button>likebutton</button>
+          <span>likecount</span>
+        </div>
+        <div class="container">
+          <a>list</a>
+          <a>modify</a>
+          <a>delete</a>
+        </div>
+        <div class="container">
+          <a>next</a>
+          <a>prev</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <form method="post" action="">
+        <textarea name="replyWrite"></textarea>
+        <button type="submit">登録</button>
+      </form>
+    </div>
+  </section>
+
+</div>
+</html>

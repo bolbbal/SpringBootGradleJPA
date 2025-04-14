@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout}">
+<div layout:fragment="content">
+    <section>
+        <div class="container page_title">
+            <div class="col-md-12">
+                <h1>全体</h1>
+            </div>
+        </div>
+
+        <div class="container board_list">
+            <table class="post_list">
+                <tr>
+                    <th>番号</th>
+                    <th>タイトル</th>
+                    <th>作成者</th>
+                    <th>作成日</th>
+                    <th>閲覧数</th>
+                    <th>いいね</th>
+                </tr>
+
+                <tr th:each="board, iterStat:${boards}">
+                    <td th:text="${board.id}"></td>
+                    <td><a href="/boards/detail/{id}(id=${board.id})" th:text="${board.title}"></a></td>
+                    <td th:text="${board.writer}"></td>
+                    <td th:text="${#temporals.format(board.modiDate, 'yyyy-MM-dd')}"></td>
+                    <td th:text="${board.viewCount}"></td>
+                    <td th:text="${board.likeCount}"></td>
+                </tr>
+            </table>
+        </div>
+        <div class="container">
+            <button type="button" onclick="window.location.href='/boards/write'">投稿</button>
+        </div>
+        <div class="container">
+            <a><</a>
+            <a>1</a>
+            <a>2</a>
+            <a>3</a>
+            <a>4</a>
+            <a>5</a>
+            <a>></a>
+        </div>
+    </section>
+
+</div>
+</html>
