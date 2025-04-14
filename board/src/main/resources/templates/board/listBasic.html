@@ -23,7 +23,7 @@
 
                 <tr th:each="board, iterStat:${boards}">
                     <td th:text="${board.id}"></td>
-                    <td><a href="/boards/detail/{id}(id=${board.id})" th:text="${board.title}"></a></td>
+                    <td><a th:href="@{/boards/detail/{id}(id=${board.id})}" th:text="${board.title}"></a></td>
                     <td th:text="${board.writer}"></td>
                     <td th:text="${#temporals.format(board.modiDate, 'yyyy-MM-dd')}"></td>
                     <td th:text="${board.viewCount}"></td>

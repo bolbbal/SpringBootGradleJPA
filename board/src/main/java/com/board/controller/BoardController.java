@@ -5,6 +5,7 @@ import com.board.entity.Board;
 import com.board.entity.Member;
 import com.board.service.BoardService;
 import com.board.service.MemberService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -12,10 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
@@ -37,8 +35,13 @@ public class BoardController {
         return "board/listBasic";
     }
 
-    @GetMapping("detail")
-    public String detail(Model model) {
+    @GetMapping("detail/{id}")
+    public String detail(Model model, @PathVariable("id") int id) {
+
+        BoardDto boardDto = boardService.detailBoard(id);
+
+        model.addAttribute("board", boardDto);
+
         return "board/detail";
     }
 
@@ -60,18 +63,27 @@ public class BoardController {
         return "redirect:/boards/list/basic";
     }
 
-    @GetMapping("update")
-    public String updatePage(Model model) {
+    @GetMapping("update/{id}")
+    public String updatePage(Model model, @PathVariable("id") int id) {
+
+        Board board = boardService.forUpdateBoard(id);
+
+        model.addAttribute("board", board);
+
         return "board/update";
     }
 
     @PostMapping("update")
-    public String updateBoard(Model model) {
+    public String updateBoard(Model model, @RequestParam("id") int id, @RequestParam("title") String title, @RequestParam("content") String content) {
+
+        boardService.updateBoard(id, title, content);
+
         return "redirect:/boards/list/basic";
     }
 
-    @PostMapping("delete")
-    public String delete(Model model) {
-        return "";
+    @PostMapping("delete/{id}")
+    public String delete(Model model, @PathVariable("id") int id) {
+        boardService.deleteBoard(id);
+        return "redirect:/boards/list/basic";
     }
 }

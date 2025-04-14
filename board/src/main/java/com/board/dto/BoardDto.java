@@ -16,4 +16,12 @@ public class BoardDto {
     private int viewCount;
     private int likeCount;
 
+    private String nextTitle;
+    private String prevTitle;
+
+    private Integer nextId;
+    private Integer prevId;
+
+
+
 }

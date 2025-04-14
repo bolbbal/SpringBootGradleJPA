@@ -6,37 +6,57 @@
   <section>
     <div class="container page_title">
       <div class="col-md-12">
-        <h1>情報編集</h1>
+        <h1>投稿</h1>
       </div>
     </div>
 
     <div class="container myPageForm">
       <div class="col-md-12">
-        <h3>title</h3>
+        <h3 th:text="${board.title}">title</h3>
         <div class="write-info">
-          <span>nickname</span>
-          <span>date</span>
-          <span>viewcount</span>
-          <span>likecount</span>
+          <span th:text="${board.writer}">nickname</span>
+          <span th:text="${#temporals.format(board.modiDate, 'yyyy-MM-dd')}">date</span>
+          <span th:text="${board.viewCount}">viewcount</span>
+          <span th:text="${board.likeCount}">likecount</span>
           <span>commentcount</span>
         </div>
         <div class="container board-content">
-          <p>
-            content
-          </p>
+          <p th:text="${board.content}"></p>
         </div>
         <div class="container">
           <button>likebutton</button>
-          <span>likecount</span>
+          <span th:text="${board.likeCount}">likecount</span>
         </div>
         <div class="container">
-          <a>list</a>
-          <a>modify</a>
-          <a>delete</a>
+          <form th:action="@{/boards/update/{id}(id=${board.id})}" method="get">
+            <button type="submit">編集</button>
+          </form>
+          <form th:action="@{/boards/delete/{id}(id=${board.id})}" method="post">
+            <button type="submit">削除</button>
+          </form>
         </div>
         <div class="container">
-          <a>next</a>
-          <a>prev</a>
+          <th:block th:if="${board.prevId != null}">
+            <a th:href="@{/boards/detail/{id}(id=${board.prevId})}">prev
+              <p th:text="${board.prevTitle}"></p>
+            </a>
+          </th:block>
+          <th:block th:if="${!(board.prevId != null)}">
+
+              <p th:text="前の投稿がありません。"></p>
+
+          </th:block>
+
+          <th:block th:if="${board.nextId != null}">
+            <a th:href="@{/boards/detail/{id}(id=${board.nextId})}">next
+              <p th:text="${board.nextTitle}"></p>
+            </a>
+          </th:block>
+          <th:block th:if="${!(board.nextId != null)}">
+
+              <p th:text="次の投稿がありません。"></p>
+
+          </th:block>
         </div>
       </div>
     </div>

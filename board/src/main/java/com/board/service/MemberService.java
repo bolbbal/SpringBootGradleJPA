@@ -20,7 +20,7 @@ public class MemberService implements UserDetailsService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public Member saveMember(MemberDto memberDto) {
+    public void saveMember(MemberDto memberDto) {
 
         Member member = Member.builder()
                 .name(memberDto.getName())
@@ -29,7 +29,7 @@ public class MemberService implements UserDetailsService {
                 .role(Role.USER)
                 .build();
 
-        return memberRepository.save(member);
+        memberRepository.save(member);
     }
 
     @Override
