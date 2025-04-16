@@ -62,10 +62,20 @@
     </div>
 
     <div class="container">
-      <form method="post" action="">
-        <textarea name="replyWrite"></textarea>
+      <form method="get" action="/comment/save" name="save">
+        <input type="hidden" name="boardId" th:value="${board.id}">
+        <textarea name="comment"></textarea>
         <button type="submit">登録</button>
       </form>
+    </div>
+
+    <div class="container">
+      <h4>Comments</h4>
+      <th:block th:each="comments, iterStat:${board.comments}">
+        <h5 th:text="${comments.commenter}"></h5>
+        <span th:text="${comments.comment}"></span>
+        <span th:text="${#temporals.format(comments.regDate, 'yyyy-MM-dd')}"></span>
+      </th:block>
     </div>
   </section>
 

@@ -3,6 +3,7 @@ package com.board.dto;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 public class BoardDto {
@@ -22,6 +23,6 @@ public class BoardDto {
     private Integer nextId;
     private Integer prevId;
 
-
+    private List<CommentDto> comments;
 
 }
