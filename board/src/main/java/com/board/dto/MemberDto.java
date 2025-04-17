@@ -12,11 +12,12 @@ public class MemberDto {
     @NotBlank(message = "名前を入力してください。")
     private String name;
 
+    @NotBlank(message = "メールを入力してください。")
     @Email(message = "メールの形で入力してください。")
     private String email;
 
     @NotEmpty(message = "パスワードを入力してください。")
-    @Pattern(regexp = "(?=.*[a-zA-Z0-9])(?=.*\\W)(?=\\S+$)", message = "パスワードは英語の大文字と小文字、特殊文字の組み合わせで入力してください。")
+    @Pattern(regexp = "(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\\W)(?=\\S+$).{8,20}", message = "パスワードは英語の大文字と小文字、特殊文字の組み合わせで８文～20文の形で入力してください。")
     private String password;
 
 }

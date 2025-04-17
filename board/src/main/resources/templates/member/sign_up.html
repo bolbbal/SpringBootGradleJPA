@@ -12,7 +12,7 @@
 
     <div class="container signUpForm">
       <div class="col-md-12">
-        <form name="signUp" method="post" action="/members/saveMember" th:object="${memberDto}">
+        <form name="signUp" method="post" action="/members/saveMember" th:object="${memberDto}" onsubmit="return check();">
           <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
           <table style="width:700px;">
             <tr>
@@ -26,9 +26,10 @@
             <tr>
               <th><label th:for="email">メール</label></th>
               <td>
-                <input type="email" th:field="*{email}">
-                <button name="mailChk">認証番号送信</button>
+                <input type="email" th:field="*{email}" id="email">
+                <button type="button" name="emailSend" id="emailSend">認証番号送信</button>
                 <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+                <p id="emailChkMessage"></p>
               </td>
 
             </tr>
@@ -36,8 +37,9 @@
             <tr>
               <th><label th:for="certify">認証番号</label></th>
               <td>
-                <input type="text" name="certify">
-                <button name="certifyChk">認証番号確認</button>
+                <input type="text" name="certify" id="certify">
+                <button type="button" name="certifyChk" id="certifyChk">認証番号確認</button>
+                <p id="certifyChkMessage"></p>
               </td>
             </tr>
 
@@ -73,26 +75,100 @@
 <div layout:fragment="script">
   <script th:inline="javascript">
 
-    const csrfHeader = $('meta[name="_csrf_header"]').attr('content');
-    const csrfToken = $('meta[name="_csrf"]').attr('content');
+    let emailChkValue = 1;
+    let certifyChkValue = 1;
+    let passwordChkValue = 1;
 
-    let passwordChk = 1;
+    $(function () {
 
-    $function () {
-      $("#passwordChk").on("change", function () {
+      const csrfHeader = $('meta[name="_csrf_header"]').attr('content');
+      const csrfToken = $('meta[name="_csrf"]').attr('content');
+
+      $("#emailSend").on('click', function () {
+
+        const email = $("#email").val();
+
+        if(!email.includes('@')) {
+          $("#emailChkMessage").text("メールの形で入力してください。");
+          return;
+        }
+
+        $.ajax({
+          type: 'POST',
+          url: '/members/emailSend',
+          beforeSend: function (xhr) {
+            xhr.setRequestHeader(csrfHeader, csrfToken);
+          },
+          data: { email : email },
+          success: function (data) {
+            if (data.success) {
+              $("#emailChkMessage").text("入力されたメールで認証番号を送信しました。");
+              emailChkValue = 0;
+            } else {
+              $("#emailChkMessage").text("もう使用されているメールです。");
+            }
+          },
+          error: function () {
+            alert('エラーが発生しました。');
+          }
+        });
+      });
+
+      $("#certifyChk").on('click', function () {
+
+        var certifyChk = $("#certify").val();
+
+        $.ajax({
+          type: 'POST',
+          url: '/members/certifyChk',
+          beforeSend: function (xhr) {
+            xhr.setRequestHeader(csrfHeader, csrfToken);
+          },
+          data: { certifyChk : certifyChk },
+          success: function (data) {
+            if (data.success) {
+              $("#certifyChkMessage").text("認証が完了されました。");
+              certifyChkValue = 0;
+            } else {
+              $("#certifyChkMessage").text("認証番号を確認してください。");
+            }
+          },
+          error: function () {
+            alert('エラーが発生しました。');
+          }
+        });
+      });
+
+      $("#passwordChk").on('input', function () {
 
         var password = $("#password").val();
         var passwordChk = $("#passwordChk").val();
 
         if(password == passwordChk) {
-          $("#passwordCheMessege").text("パスワードが一致します。");
-          passwordChk = 0;
+          $("#passwordChkMessage").text("パスワードが一致します。");
+          passwordChkValue = 0;
         } else {
-          $("#passwordCheMessege").text("パスワードが一致しません。");
+          $("#passwordChkMessage").text("パスワードが一致しません。");
         }
 
       });
-    };
+    });
+
+    function check() {
+        if(emailChkValue === 1) {
+          alert("メールを認証してください。");
+          return false;
+        }
+        if(certifyChkValue === 1) {
+          alert("正しい認証番号を入力してください。");
+          return false;
+        }
+        if(passwordChkValue === 1) {
+          alert("パスワードを一致させてください。");
+          return false;
+        }
+        return true;
+      }
   </script>
 </div>
 </html>

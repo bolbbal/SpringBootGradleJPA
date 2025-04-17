@@ -1,7 +1,9 @@
 package com.board.controller;
 
 import com.board.dto.MemberDto;
+import com.board.entity.Member;
 import com.board.service.MemberService;
+import com.board.util.MailSenderRunner;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -9,9 +11,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Controller
@@ -20,6 +22,7 @@ import java.util.Map;
 public class MemberController {
 
     private final MemberService memberService;
+    private final MailSenderRunner mailSenderRunner;
 
     @GetMapping("signUp")
     public String signUpPage(Model model) {
@@ -27,6 +30,50 @@ public class MemberController {
         model.addAttribute("memberDto", new MemberDto());
 
         return "member/sign_up";
+    }
+
+    private String certify = "";
+
+    @PostMapping("emailSend")
+    @ResponseBody
+    public Map<String, Boolean> emailSend(Model model, @RequestParam("email") String email) {
+
+        Map<String, Boolean> result = new HashMap<>();
+
+        boolean isExist = false;
+
+        Member member = memberService.findByEmail(email);
+
+        if(member == null) {
+            isExist = true;
+
+            certify = mailSenderRunner.sendMail(email);
+        }
+
+        result.put("success", isExist);
+
+        return result;
+
+    }
+
+    @PostMapping("certifyChk")
+    @ResponseBody
+    public Map<String, Boolean> certifyChk(Model model, @RequestParam("certifyChk") int certifyChk) {
+
+        Map<String, Boolean> result = new HashMap<>();
+
+        boolean isTrue = false;
+
+        String certifyNum = Integer.toString(certifyChk);
+
+        if(certify.equals(certifyNum)) {
+            isTrue = true;
+        }
+
+        result.put("success", isTrue);
+
+        return result;
+
     }
 
     @PostMapping("saveMember")

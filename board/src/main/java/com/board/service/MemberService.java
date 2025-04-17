@@ -13,12 +13,18 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class MemberService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+
+    public Member findByEmail(String email) {
+        return memberRepository.findByEmail(email);
+    }
 
     public void saveMember(MemberDto memberDto) {
 
