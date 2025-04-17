@@ -17,37 +17,82 @@
           <table style="width:700px;">
             <tr>
               <th><label th:for="name">名前</label></th>
-              <td><input type="text" th:field="*{name}"></td>
+              <td>
+                <input type="text" th:field="*{name}">
+                <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
+              </td>
             </tr>
 
             <tr>
               <th><label th:for="email">メール</label></th>
-              <td><input type="email" th:field="*{email}"><button name="mailChk">認証番号送信</button></td>
+              <td>
+                <input type="email" th:field="*{email}">
+                <button name="mailChk">認証番号送信</button>
+                <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+              </td>
+
             </tr>
 
             <tr>
               <th><label th:for="certify">認証番号</label></th>
-              <td><input type="text" name="certify"><button name="certifyChk">認証番号確認</button></td>
+              <td>
+                <input type="text" name="certify">
+                <button name="certifyChk">認証番号確認</button>
+              </td>
             </tr>
 
             <tr>
               <th><label th:for="password">パスワード</label></th>
-              <td><input type="password" th:field="*{password}"></td>
+              <td>
+                <input type="password" th:field="*{password}" id="password">
+                <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
+              </td>
             </tr>
 
             <tr>
               <th><label th:for="passwordChk">パスワード確認</label></th>
-              <td><input type="password" name="passwordChk"></td>
+              <td>
+                <input type="password" name="passwordChk" id="passwordChk">
+                <p id="passwordChkMessage"></p>
+              </td>
             </tr>
 
             <tr>
-              <td colspan="2"><button type="submit" name="save">登録</button><button type="button" name="cancel" onclick="history.back()">キャンセル</button></td>
+              <td colspan="2">
+                <button type="submit" name="save">登録</button>
+                <button type="button" name="cancel" onclick="history.back()">キャンセル</button>
+              </td>
             </tr>
           </table>
         </form>
       </div>
     </div>
   </section>
+</div>
 
+<div layout:fragment="script">
+  <script th:inline="javascript">
+
+    const csrfHeader = $('meta[name="_csrf_header"]').attr('content');
+    const csrfToken = $('meta[name="_csrf"]').attr('content');
+
+    let passwordChk = 1;
+
+    $function () {
+      $("#passwordChk").on("change", function () {
+
+        var password = $("#password").val();
+        var passwordChk = $("#passwordChk").val();
+
+        if(password == passwordChk) {
+          $("#passwordCheMessege").text("パスワードが一致します。");
+          passwordChk = 0;
+        } else {
+          $("#passwordCheMessege").text("パスワードが一致しません。");
+        }
+
+      });
+    };
+  </script>
 </div>
 </html>

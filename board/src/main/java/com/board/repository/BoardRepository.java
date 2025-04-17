@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public interface BoardRepository extends JpaRepository<Board, Integer> {
 
-    Page<Board> findAllByOrderByRegDateDesc(Pageable pageable);
+    Page<Board> findAllByOrderByIdDesc(Pageable pageable);
 
     Board findById(int id);
 

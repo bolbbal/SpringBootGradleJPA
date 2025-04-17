@@ -5,7 +5,6 @@ import com.board.dto.CommentDto;
 import com.board.entity.Board;
 import com.board.entity.Comment;
 import com.board.repository.BoardRepository;
-import com.board.repository.CommentRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -31,7 +30,7 @@ public class BoardService {
 
         Page<Board> boards;
 
-        boards = boardRepository.findAllByOrderByRegDateDesc(pageable);
+        boards = boardRepository.findAllByOrderByIdDesc(pageable);
 
         return boards.map(board -> {
 
