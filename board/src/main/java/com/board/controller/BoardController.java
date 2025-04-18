@@ -5,12 +5,11 @@ import com.board.entity.Board;
 import com.board.entity.Member;
 import com.board.service.BoardService;
 import com.board.service.MemberService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -28,14 +27,17 @@ public class BoardController {
 
     @GetMapping("list/basic")
     public String listBasic(Model model,
-                            @PageableDefault(page = 0, size = 10) Pageable pageable,
+                            @RequestParam(value = "page", defaultValue = "1") int page,
+                            @RequestParam(value = "size", defaultValue = "10") int size,
                             @RequestParam(value = "type", defaultValue = "title") String type,
                             @RequestParam(value = "keyword", required = false) String keyword) {
 
+        Pageable pageable = PageRequest.of(page - 1, size);
         Page<BoardDto> boardPage = boardService.listBoard(pageable, type, keyword);
 
         model.addAttribute("boards", boardPage.getContent());
         model.addAttribute("page", boardPage);
+        model.addAttribute("currentPage", page);
         model.addAttribute("type", type);
         model.addAttribute("keyword", keyword);
 

@@ -14,7 +14,7 @@ import java.util.List;
 public interface BoardRepository extends JpaRepository<Board, Integer> {
 
     Page<Board> findAllByOrderByIdDesc(Pageable pageable);
-    
+
     Page<Board> findByTitleContainingOrderByIdDesc(String keyword, Pageable pageable);
 
     Page<Board> findByContentContainingOrderByIdDesc(String keyword, Pageable pageable);

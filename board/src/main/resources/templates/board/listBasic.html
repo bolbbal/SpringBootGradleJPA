@@ -34,15 +34,22 @@
         <div class="container">
             <button type="button" onclick="window.location.href='/boards/write'">投稿</button>
         </div>
+
         <div class="container">
-            <a><</a>
-            <a>1</a>
-            <a>2</a>
-            <a>3</a>
-            <a>4</a>
-            <a>5</a>
-            <a>></a>
+            <a th:if="${page.hasPrevious()}"
+               th:href="@{/boards/list/basic(page=${currentPage - 1}, type=${type}, keyword=${keyword ?: ''})}">&lt;</a>
+
+            <span th:if="${page != null and page.totalPages > 1}"
+                  th:each="i : ${#numbers.sequence(1, page.totalPages)}">
+                <a th:href="@{/boards/list/basic(page=${i}, type=${type}, keyword=${keyword ?: ''})}"
+                   th:text="${i}"
+                   th:classappend="${i == currentPage} ? 'active' : ''"></a>
+            </span>
+
+            <a th:if="${page.hasNext()}"
+               th:href="@{/boards/list/basic(page=${currentPage + 1}, type=${type}, keyword=${keyword ?: ''})}">&gt;</a>
         </div>
+
     </section>
 
 </div>
