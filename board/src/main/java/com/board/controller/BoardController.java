@@ -10,6 +10,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -55,6 +56,7 @@ public class BoardController {
     }
 
     @GetMapping("write")
+    @PreAuthorize("isAuthenticated()")
     public String writePage(Model model) {
         return "board/write";
     }
@@ -73,9 +75,14 @@ public class BoardController {
     }
 
     @GetMapping("update/{id}")
-    public String updatePage(Model model, @PathVariable("id") int id) {
+    @PreAuthorize("isAuthenticated()")
+    public String updatePage(Model model, @PathVariable("id") int id, Principal principal) {
 
         Board board = boardService.forUpdateBoard(id);
+
+        if(principal == null || !principal.getName().equals(board.getWriter())) {
+            return "redirect:/boards/detail/" + id;
+        }
 
         model.addAttribute("board", board);
 
@@ -91,8 +98,24 @@ public class BoardController {
     }
 
     @PostMapping("delete/{id}")
-    public String delete(Model model, @PathVariable("id") int id) {
+    @PreAuthorize("isAuthenticated()")
+    public String delete(Model model, @PathVariable("id") int id, Principal principal) {
+
+        Board board = boardService.forUpdateBoard(id);
+
+        if(principal == null || !principal.getName().equals(board.getWriter())) {
+            return "redirect:/boards/detail/" + id;
+        }
+
         boardService.deleteBoard(id);
         return "redirect:/boards/list/basic";
+    }
+
+    @GetMapping("like/{id}")
+    public String like(@PathVariable("id") int id) {
+
+        boardService.likeCountUpdate(id);
+
+        return "redirect:/boards/detail/" + id;
     }
 }

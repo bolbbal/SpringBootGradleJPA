@@ -19,6 +19,7 @@
                     <th>作成日</th>
                     <th>閲覧数</th>
                     <th>いいね</th>
+                    <th>コメント</th>
                 </tr>
 
                 <tr>
@@ -32,6 +33,7 @@
                     <td th:text="${#temporals.format(board.modiDate, 'yyyy-MM-dd')}"></td>
                     <td th:text="${board.viewCount}"></td>
                     <td th:text="${board.likeCount}"></td>
+                    <td th:text="${board.commentCount}"></td>
                 </tr>
             </table>
         </div>

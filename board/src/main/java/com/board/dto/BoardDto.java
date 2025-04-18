@@ -24,5 +24,6 @@ public class BoardDto {
     private Integer prevId;
 
     private List<CommentDto> comments;
+    private int commentCount;
 
 }

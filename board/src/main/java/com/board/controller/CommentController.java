@@ -7,6 +7,7 @@ import com.board.service.BoardService;
 import com.board.service.CommentService;
 import com.board.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +26,7 @@ public class CommentController {
     private final BoardService boardService;
 
     @GetMapping("save")
+    @PreAuthorize("isAuthenticated()")
     private String saveComment(Model model, @RequestParam("boardId") int boardId, @RequestParam("comment") String comments, Principal principal) {
 
         Member member = memberService.MemberInfoByUsername(principal.getName());

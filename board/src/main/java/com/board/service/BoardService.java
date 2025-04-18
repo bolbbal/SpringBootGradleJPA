@@ -5,6 +5,7 @@ import com.board.dto.CommentDto;
 import com.board.entity.Board;
 import com.board.entity.Comment;
 import com.board.repository.BoardRepository;
+import com.board.repository.CommentRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -22,6 +23,7 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
     private final ModelMapper modelMapper;
+    private final CommentRepository commentRepository;
 
     public void saveBoard(Board board) {
         boardRepository.save(board);
@@ -53,12 +55,11 @@ public class BoardService {
 
             BoardDto dto = modelMapper.map(board, BoardDto.class);
 
+            int commentCount = commentRepository.countByBoardId(board.getId());
+            dto.setCommentCount(commentCount);
+
             return dto;
         });
-    }
-
-    public long count() {
-        return boardRepository.count();
     }
 
     public BoardDto detailBoard(int id) {
@@ -94,6 +95,7 @@ public class BoardService {
         }
 
         boardDto.setComments(commentDtos);
+        boardDto.setCommentCount(comments.size());
 
         return boardDto;
 
@@ -120,5 +122,11 @@ public class BoardService {
 
     public void deleteBoard(int id) {
         boardRepository.deleteById(id);
+    }
+
+    public void likeCountUpdate(int id) {
+        Board board = findById(id);
+        board.setLikeCount(board.getLikeCount() + 1);
+        boardRepository.save(board);
     }
 }

@@ -37,7 +37,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/members/login").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/board/write").authenticated()
+                        .requestMatchers("/boards/write").authenticated()
+                        .requestMatchers("/boards/update").authenticated()
+                        .requestMatchers("/boards/delete").authenticated()
+                        .requestMatchers("/comment/save").authenticated()
                         .anyRequest().permitAll());
 
         return http.build();

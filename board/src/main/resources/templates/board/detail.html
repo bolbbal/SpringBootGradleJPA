@@ -24,13 +24,11 @@
           <p th:text="${board.content}"></p>
         </div>
         <div class="container text-center like_button">
-          <button>いいね</button>
+          <button type="button" th:onclick="|location.href='@{/boards/like/{id}(id=${board.id})}'|">いいね</button>
           <span th:text="${board.likeCount}">likecount</span>
         </div>
         <div class="container">
-          <form th:action="@{/boards/update/{id}(id=${board.id})}" method="get">
-            <button type="button" class="text-left">編集</button>
-          </form>
+          <button type="button" th:onclick="|location.href='@{/boards/update/{id}(id=${board.id})}'|"class="text-left">編集</button>
           <form th:action="@{/boards/delete/{id}(id=${board.id})}" method="post">
             <button type="submit" class="text-right">削除</button>
           </form>

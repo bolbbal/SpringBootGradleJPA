@@ -41,6 +41,11 @@
 
 textarea {
     resize : none;
-    width : 700px;
+    width : 500px;
     height : 400px;
+}
+
+a {
+    text-decoration : none;
+    color : #000000;
 }
