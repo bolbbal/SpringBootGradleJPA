@@ -1,0 +1,46 @@
+.board_nav {
+    width : 1140px;
+    padding-top : 15px;
+}
+
+.search_bar {
+    width : 600px;
+}
+
+.section_height {
+    height : 700px;
+}
+
+.board_list {
+    padding-top : 15px;
+    text-align : center;
+}
+
+.page_title {
+    padding : 15px 0;
+    text-align : center;
+}
+
+.form_table {
+    margin : 0 auto;
+    width : 700px;
+}
+
+.board_content {
+    padding : 15px 0;
+}
+
+.like_button {
+    padding-bottom : 15px;
+}
+
+.another_board {
+    height : 30px;
+    padding : 3px 0;
+}
+
+textarea {
+    resize : none;
+    width : 700px;
+    height : 400px;
+}

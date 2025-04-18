@@ -3,7 +3,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/layout}">
 <div layout:fragment="content">
-    <section>
+    <section class="section_height">
         <div class="container page_title">
             <div class="col-md-12">
                 <h1>全体</h1>
@@ -11,7 +11,7 @@
         </div>
 
         <div class="container board_list">
-            <table class="post_list">
+            <table class="post_list form_table">
                 <tr>
                     <th>番号</th>
                     <th>タイトル</th>
@@ -21,21 +21,25 @@
                     <th>いいね</th>
                 </tr>
 
+                <tr>
+                    <th th:if="boards == null">作成された投稿がありません。</th>
+                </tr>
+
                 <tr th:each="board, iterStat:${boards}">
                     <td th:text="${board.id}"></td>
                     <td><a th:href="@{/boards/detail/{id}(id=${board.id})}" th:text="${board.title}"></a></td>
-                    <td th:text="${board.writer}"></td>
+                    <td th:text="${board.writer}" style="text-align:none;"></td>
                     <td th:text="${#temporals.format(board.modiDate, 'yyyy-MM-dd')}"></td>
                     <td th:text="${board.viewCount}"></td>
                     <td th:text="${board.likeCount}"></td>
                 </tr>
             </table>
         </div>
-        <div class="container">
+        <div class="container text-right">
             <button type="button" onclick="window.location.href='/boards/write'">投稿</button>
         </div>
 
-        <div class="container">
+        <div class="container text-center">
             <a th:if="${page.hasPrevious()}"
                th:href="@{/boards/list/basic(page=${currentPage - 1}, type=${type}, keyword=${keyword ?: ''})}">&lt;</a>
 

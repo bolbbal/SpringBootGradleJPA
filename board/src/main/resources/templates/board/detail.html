@@ -3,68 +3,64 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/layout}">
 <div layout:fragment="content">
-  <section>
+  <section class="section_height">
     <div class="container page_title">
       <div class="col-md-12">
         <h1>投稿</h1>
       </div>
     </div>
 
-    <div class="container myPageForm">
+    <div class="container">
       <div class="col-md-12">
-        <h3 th:text="${board.title}">title</h3>
-        <div class="write-info">
-          <span th:text="${board.writer}">nickname</span>
-          <span th:text="${#temporals.format(board.modiDate, 'yyyy-MM-dd')}">date</span>
-          <span th:text="${board.viewCount}">viewcount</span>
-          <span th:text="${board.likeCount}">likecount</span>
-          <span>commentcount</span>
+        <h3 th:text="${board.title}" class="text-center">title</h3>
+        <div class="text-center">
+          <span th:text="'作成者：' + ${board.writer}">nickname</span>
+          <span th:text="' | 作成日：' + ${#temporals.format(board.modiDate, 'yyyy-MM-dd')}">date</span>
+          <span th:text="' | 一覧数：' + ${board.viewCount}">viewcount</span>
+          <span th:text="' | いいね：' + ${board.likeCount}">likecount</span>
+          <span th:text="' | コメント：' + ${board.commentCount}">commentcount</span>
         </div>
-        <div class="container board-content">
+        <div class="container board_content">
           <p th:text="${board.content}"></p>
         </div>
-        <div class="container">
-          <button>likebutton</button>
+        <div class="container text-center like_button">
+          <button>いいね</button>
           <span th:text="${board.likeCount}">likecount</span>
         </div>
         <div class="container">
           <form th:action="@{/boards/update/{id}(id=${board.id})}" method="get">
-            <button type="submit">編集</button>
+            <button type="button" class="text-left">編集</button>
           </form>
           <form th:action="@{/boards/delete/{id}(id=${board.id})}" method="post">
-            <button type="submit">削除</button>
+            <button type="submit" class="text-right">削除</button>
           </form>
         </div>
-        <div class="container">
+        <div class="container another_board">
           <th:block th:if="${board.prevId != null}">
-            <a th:href="@{/boards/detail/{id}(id=${board.prevId})}">prev
-              <p th:text="${board.prevTitle}"></p>
+            <a th:href="@{/boards/detail/{id}(id=${board.prevId})}"　class="text-left">&lt; 以前
+              <span th:text="${board.prevTitle}" class="text-left"></span>
             </a>
           </th:block>
-          <th:block th:if="${!(board.prevId != null)}">
-
-              <p th:text="前の投稿がありません。"></p>
-
+          <th:block th:if="${!(board.prevId != null)}"　class="text-left">
+              <span th:text="前の投稿がありません。" class="text-left"></span>
           </th:block>
 
+          <th:block th:if="${!(board.nextId != null)}"　class="text-right">
+              <span th:text="次の投稿がありません。" class="text-right"></span>
+          </th:block>
           <th:block th:if="${board.nextId != null}">
-            <a th:href="@{/boards/detail/{id}(id=${board.nextId})}">next
-              <p th:text="${board.nextTitle}"></p>
+            <a th:href="@{/boards/detail/{id}(id=${board.nextId})}"　class="text-right">&gt; 以後
+              <span th:text="${board.nextTitle}" class="text-right"></span>
             </a>
-          </th:block>
-          <th:block th:if="${!(board.nextId != null)}">
-
-              <p th:text="次の投稿がありません。"></p>
-
           </th:block>
         </div>
       </div>
     </div>
 
-    <div class="container">
+    <div class="container text-center">
       <form method="get" action="/comment/save" name="save">
         <input type="hidden" name="boardId" th:value="${board.id}">
-        <textarea name="comment"></textarea>
+        <textarea name="comment" style="height : 100px;"></textarea>
         <button type="submit">登録</button>
       </form>
     </div>
@@ -74,7 +70,7 @@
       <th:block th:each="comments, iterStat:${board.comments}">
         <h5 th:text="${comments.commenter}"></h5>
         <span th:text="${comments.comment}"></span>
-        <span th:text="${#temporals.format(comments.regDate, 'yyyy-MM-dd')}"></span>
+        <span th:text="${#temporals.format(comments.regDate, 'yyyy-MM-dd')}" class="text-right"></span>
       </th:block>
     </div>
   </section>

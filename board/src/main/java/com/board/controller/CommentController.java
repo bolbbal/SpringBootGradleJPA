@@ -26,9 +26,10 @@ public class CommentController {
 
     @GetMapping("save")
     private String saveComment(Model model, @RequestParam("boardId") int boardId, @RequestParam("comment") String comments, Principal principal) {
-        System.out.println(principal.getName());
+
         Member member = memberService.MemberInfoByUsername(principal.getName());
         Board board = boardService.findById(boardId);
+
         Comment comment = new Comment();
 
         comment.setComment(comments);

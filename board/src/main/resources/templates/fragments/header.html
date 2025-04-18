@@ -2,38 +2,38 @@
 <html xmlns:th="http:thymeleaf.org">
   <div th:fragment="header">
     <div class="container">
-      <div class="row">
-        <nav>
-          <div class="col-md-2">
-            <ul>
-              <li sec:authorize="isAnonymous()"><a href="/members/login">ログイン</a></li>
-              <li sec:authorize="isAnonymous()"><a href="/members/signUp">新規登録</a></li>
-              <li sec:authorize="isAuthenticated()"><a href="/members/logout">ログアウト</a></li>
-              <li sec:authorize="isAuthenticated()"><a href="/members/myPage">情報編集</a></li>
-            </ul>
-          </div>
+      <nav class="board_nav">
+        <div class="row">
 
-          <div class="col-md-8">
-            <form name="search" method="get" action="/boards/list/basic">
-              <select name="type">
-                <option value="title" th:selected="${type == 'title'}">タイトル</option>
-                <option value="content" th:selected="${type == 'content'}">内容</option>
-              </select>
-              <input type="text" name="keyword" th:value="${keyword}">
-              <button type="submit">検索</button>
-            </form>
-          </div>
+            <div class="col-md-2">
+              <a href="/members/login" sec:authorize="isAnonymous()" >ログイン</a>
+              <a href="/members/signUp" sec:authorize="isAnonymous()">新規登録</a>
+              <a href="/members/logout" sec:authorize="isAuthenticated()">ログアウト</a>
+              <a href="/members/myPage" sec:authorize="isAuthenticated()">情報編集</a>
+            </div>
 
-          <div class="col-md-2">
-          </div>
-        </nav>
-      </div>
+            <div class="col-md-8">
+              <form name="search" method="get" action="/boards/list/basic" class="search_bar">
+                <select name="type">
+                  <option value="title" th:selected="${type == 'title'}">タイトル</option>
+                  <option value="content" th:selected="${type == 'content'}">内容</option>
+                </select>
+                <input type="text" name="keyword" th:value="${keyword}">
+                <button type="submit">検索</button>
+              </form>
+            </div>
+
+            <div class="col-md-2">
+            </div>
+
+        </div>
+      </nav>
     </div>
 
-    <div class="container">
+    <div class="container board_list">
       <div class="row">
         <div class="col-md-3">
-          <a href="/boards/list/basic">全体</a>
+          <a th:href="@{/boards/list/basic}">全体</a>
         </div>
 
         <div class="col-md-3">
