@@ -27,11 +27,18 @@ public class BoardController {
     private final MemberService memberService;
 
     @GetMapping("list/basic")
-    public String listBasic(Model model, @PageableDefault(size = 10) Pageable pageable) {
+    public String listBasic(Model model,
+                            @PageableDefault(page = 0, size = 10) Pageable pageable,
+                            @RequestParam(value = "type", defaultValue = "title") String type,
+                            @RequestParam(value = "keyword", required = false) String keyword) {
 
-        Page<BoardDto> boardPage = boardService.listBoard(pageable);
+        Page<BoardDto> boardPage = boardService.listBoard(pageable, type, keyword);
+
         model.addAttribute("boards", boardPage.getContent());
         model.addAttribute("page", boardPage);
+        model.addAttribute("type", type);
+        model.addAttribute("keyword", keyword);
+
         return "board/listBasic";
     }
 

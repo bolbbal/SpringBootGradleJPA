@@ -31,7 +31,6 @@ public class Board {
     @Column(updatable = false)
     private LocalDateTime regDate;
 
-    @UpdateTimestamp
     private LocalDateTime modiDate;
 
     private int viewCount;

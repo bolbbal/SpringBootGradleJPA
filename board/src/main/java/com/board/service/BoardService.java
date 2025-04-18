@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,11 +27,27 @@ public class BoardService {
         boardRepository.save(board);
     }
 
-    public Page<BoardDto> listBoard(Pageable pageable) {
+    public Page<BoardDto> listBoard(Pageable pageable, String type, String keyword) {
 
         Page<Board> boards;
 
-        boards = boardRepository.findAllByOrderByIdDesc(pageable);
+        if(keyword == null || keyword.isEmpty()) {
+
+            boards = boardRepository.findAllByOrderByIdDesc(pageable);
+
+        } else if(type.equals("title") && !keyword.isEmpty()){
+
+            boards = boardRepository.findByTitleContainingOrderByIdDesc(keyword, pageable);
+
+        } else if(type.equals("content") && !keyword.isEmpty()) {
+
+            boards = boardRepository.findByContentContainingOrderByIdDesc(keyword, pageable);
+
+        } else {
+
+            boards = boardRepository.findAllByOrderByIdDesc(pageable);
+
+        }
 
         return boards.map(board -> {
 
@@ -38,6 +55,10 @@ public class BoardService {
 
             return dto;
         });
+    }
+
+    public long count() {
+        return boardRepository.count();
     }
 
     public BoardDto detailBoard(int id) {
@@ -93,6 +114,7 @@ public class BoardService {
 
         board.setTitle(title);
         board.setContent(content);
+        board.setModiDate(LocalDateTime.now());
 
     }
 

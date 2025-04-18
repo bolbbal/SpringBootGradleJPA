@@ -14,8 +14,14 @@
           </div>
 
           <div class="col-md-8">
-            <input type="text">
-            <a>検索</a>
+            <form name="search" method="get" action="/boards/list/basic">
+              <select name="type">
+                <option value="title" th:selected="${type == 'title'}">タイトル</option>
+                <option value="content" th:selected="${type == 'content'}">内容</option>
+              </select>
+              <input type="text" name="keyword" th:value="${keyword}">
+              <button type="submit">検索</button>
+            </form>
           </div>
 
           <div class="col-md-2">
