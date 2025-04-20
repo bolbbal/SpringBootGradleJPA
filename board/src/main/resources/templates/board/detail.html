@@ -47,8 +47,8 @@
               <span th:text="次の投稿がありません。" class="text-right"></span>
           </th:block>
           <th:block th:if="${board.nextId != null}">
-            <a th:href="@{/boards/detail/{id}(id=${board.nextId})}"　class="text-right">&gt; 以後
-              <span th:text="${board.nextTitle}" class="text-right"></span>
+            <a th:href="@{/boards/detail/{id}(id=${board.nextId})}"　class="text-right">
+              <span th:text="${board.nextTitle}" class="text-right"></span> 以後 &gt;
             </a>
           </th:block>
         </div>

@@ -12,4 +12,6 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
     List<Comment> findByBoardId(int boardId);
 
     int countByBoardId(int boardId);
+
+    void deleteByMemberId(Long memberId);
 }

@@ -1,5 +1,6 @@
 package com.board.controller;
 
+import com.board.constant.Role;
 import com.board.dto.BoardDto;
 import com.board.entity.Board;
 import com.board.entity.Member;
@@ -102,12 +103,14 @@ public class BoardController {
     public String delete(Model model, @PathVariable("id") int id, Principal principal) {
 
         Board board = boardService.forUpdateBoard(id);
+        Member member = memberService.MemberInfoByUsername(principal.getName());
 
-        if(principal == null || !principal.getName().equals(board.getWriter())) {
+        if(principal == null || (!principal.getName().equals(board.getWriter()) && member.getRole() != Role.ADMIN)) {
             return "redirect:/boards/detail/" + id;
         }
 
         boardService.deleteBoard(id);
+
         return "redirect:/boards/list/basic";
     }
 

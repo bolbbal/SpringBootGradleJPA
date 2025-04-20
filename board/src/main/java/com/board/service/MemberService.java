@@ -3,6 +3,7 @@ package com.board.service;
 import com.board.constant.Role;
 import com.board.dto.MemberDto;
 import com.board.entity.Member;
+import com.board.repository.CommentRepository;
 import com.board.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
@@ -21,6 +22,7 @@ public class MemberService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final CommentRepository commentRepository;
 
     public Member findByEmail(String email) {
         return memberRepository.findByEmail(email);
@@ -81,6 +83,26 @@ public class MemberService implements UserDetailsService {
         Member member = memberRepository.findByEmail(email);
 
         member.setPassword(passwordEncoder.encode(newPassword));
+
+    }
+
+    @Transactional
+    public boolean deleteMember(String email) {
+
+        Member member = memberRepository.findByEmail(email);
+
+        boolean result = false;
+
+        if (member != null){
+
+            commentRepository.deleteByMemberId(member.getId());
+
+            memberRepository.deleteById(member.getId());
+
+            result = true;
+        }
+
+        return result;
 
     }
 }

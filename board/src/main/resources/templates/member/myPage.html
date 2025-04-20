@@ -29,6 +29,7 @@
               <td colspan="2" class="text-center">
                 <button type="submit" name="infoChange">情報編集</button>
                 <button type="button" name="passwordChange" onclick="window.location.href='/members/passwordChk'">パスワード編集</button>
+                <button type="button" data-toggle="modal" data-target="#exampleModal" id="withdraw">会員退会</button>
                 <button type="button" name="cancel" onclick="history.back()">キャンセル</button>
               </td>
             </tr>
@@ -38,5 +39,90 @@
     </div>
   </section>
 
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="myModalLabel">会員退会</h4>
+        </div>
+        <div class="modal-body">
+          <p>パスワ―ドを入力してください</p>
+          <input type="password" id="deletePassword" placeholder="password" class="form-control" />
+          <div id="deletePasswordMsg"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
+          <button type="button" class="btn btn-danger" id="confirmDelete">確認</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+
+<div layout:fragment="script">
+  <script th:inline="javascript">
+
+    $(function() {
+		    $("#withdraw").on("click", function() {
+		        $("#myModal").modal('show');
+		    });
+
+		    $("#confirmDelete").on("click", function() {
+		        if (!$("#deletePassword").val()) {
+		            $("#deletePasswordMsg").html("<span style='color:#f00;'>パスワ―ドを入力してください</span>");
+		            $("#deletePassword").focus();
+		            return;
+		        }
+
+		        const csrfHeader = $('meta[name="_csrf_header"]').attr('content');
+                const csrfToken = $('meta[name="_csrf"]').attr('content');
+
+                let password = $("#deletePassword").val();
+
+		        $.ajax({
+		            type: 'post',
+		            url: '/members/passwordChk',
+		            beforeSend: function (xhr) {
+                      xhr.setRequestHeader(csrfHeader, csrfToken);
+                    },
+		            data: { password : password },
+		            success: function(data) {
+		                if (data === true) {
+		                	if (confirm("本当に退会しますか？")) {
+		                        $.ajax({
+		                            type: 'post',
+		                            url: '/members/delete',
+		                            beforeSend: function (xhr) {
+                                      xhr.setRequestHeader(csrfHeader, csrfToken);
+                                    },
+		                            data: { },
+		                            success: function(data) {
+		                                if (data === true) {
+		                                    alert("退会が完了しました");
+		                                    $("#myModal").modal('hide');
+		                                    window.location.href = '/members/logout';
+		                                }
+		                            },
+		                            error: function() {
+		                                alert("エラーが発生しました。再度お試しください1");
+		                            }
+		                        });
+		                    } else {
+		                        $("#myModal").modal('hide');
+		                    }
+		                }
+		            },
+		            error: function() {
+		                alert("エラーが発生しました。再度お試しください2");
+		            }
+		        });
+		    });
+		});
+
+  </script>
+</div>
+
 </html>

@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,6 +50,8 @@ public class MemberController {
 
             certify = mailSenderRunner.sendMail(email);
         }
+
+        System.out.println(certify);
 
         result.put("success", isExist);
 
@@ -162,7 +165,14 @@ public class MemberController {
 
         memberService.updatePasswordByUsername(email, password);
 
-        return "redirect:/";
+        return "redirect:/members/logout";
+    }
+
+    @PostMapping("delete")
+    @ResponseBody
+    public boolean deleteMember(Authentication auth) {
+
+        return memberService.deleteMember(auth.getName());
     }
 
 

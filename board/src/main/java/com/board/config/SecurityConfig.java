@@ -36,6 +36,7 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/").invalidateHttpSession(true))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/members/login").permitAll()
+                        .requestMatchers("/members/delete").authenticated()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/boards/write").authenticated()
                         .requestMatchers("/boards/update").authenticated()
