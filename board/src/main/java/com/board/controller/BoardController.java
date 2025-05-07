@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
+//掲示板関連コントローラー
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/boards")
@@ -27,15 +28,16 @@ public class BoardController {
     private final ModelMapper modelMapper;
     private final MemberService memberService;
 
+    //投稿のリスト
     @GetMapping("list/basic")
     public String listBasic(Model model,
-                            @RequestParam(value = "page", defaultValue = "1") int page,
-                            @RequestParam(value = "size", defaultValue = "10") int size,
-                            @RequestParam(value = "type", defaultValue = "title") String type,
+                            @RequestParam(value = "page", defaultValue = "1") int page, //ユーザーに見せるページの番号
+                            @RequestParam(value = "size", defaultValue = "10") int size, //一つのページに見せる投稿の数
+                            @RequestParam(value = "type", defaultValue = "title") String type, //検索のオプションを設定
                             @RequestParam(value = "keyword", required = false) String keyword) {
 
-        Pageable pageable = PageRequest.of(page - 1, size);
-        Page<BoardDto> boardPage = boardService.listBoard(pageable, type, keyword);
+        Pageable pageable = PageRequest.of(page - 1, size); //実際ページを設定
+        Page<BoardDto> boardPage = boardService.listBoard(pageable, type, keyword); //該当ページの投稿リスト
 
         model.addAttribute("boards", boardPage.getContent());
         model.addAttribute("page", boardPage);
@@ -46,6 +48,7 @@ public class BoardController {
         return "board/listBasic";
     }
 
+    //投稿の詳細
     @GetMapping("detail/{id}")
     public String detail(Model model, @PathVariable("id") int id) {
 
@@ -56,18 +59,20 @@ public class BoardController {
         return "board/detail";
     }
 
+    //投稿作成ページ移動
     @GetMapping("write")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated()") //ログイン有無検査
     public String writePage(Model model) {
         return "board/write";
     }
 
+    //作成された投稿保存
     @PostMapping("write")
     public String writeBoard(Model model, @ModelAttribute BoardDto boardDto, Principal principal) {
 
-        Member member = memberService.MemberInfoByUsername(principal.getName());
+        Member member = memberService.MemberInfoByUsername(principal.getName()); //ユーザーセッションで情報得る
         String writer = member.getName();
-        Board board = modelMapper.map(boardDto, Board.class);
+        Board board = modelMapper.map(boardDto, Board.class); //BoardDtoであるデータでBoardオブジェクト生成
 
         board.setWriter(writer);
 
@@ -75,12 +80,14 @@ public class BoardController {
         return "redirect:/boards/list/basic";
     }
 
+    //投稿の編集ページ
     @GetMapping("update/{id}")
     @PreAuthorize("isAuthenticated()")
     public String updatePage(Model model, @PathVariable("id") int id, Principal principal) {
 
-        Board board = boardService.forUpdateBoard(id);
+        Board board = boardService.findById(id);
 
+        //作成者検査
         if(principal == null || !principal.getName().equals(board.getWriter())) {
             return "redirect:/boards/detail/" + id;
         }
@@ -90,6 +97,7 @@ public class BoardController {
         return "board/update";
     }
 
+    //編集された投稿保存
     @PostMapping("update")
     public String updateBoard(Model model, @RequestParam("id") int id, @RequestParam("title") String title, @RequestParam("content") String content) {
 
@@ -98,13 +106,15 @@ public class BoardController {
         return "redirect:/boards/list/basic";
     }
 
+    //投稿の削除
     @PostMapping("delete/{id}")
     @PreAuthorize("isAuthenticated()")
     public String delete(Model model, @PathVariable("id") int id, Principal principal) {
 
-        Board board = boardService.forUpdateBoard(id);
+        Board board = boardService.findById(id);
         Member member = memberService.MemberInfoByUsername(principal.getName());
 
+        //作成者と管理者が削除できる
         if(principal == null || (!principal.getName().equals(board.getWriter()) && member.getRole() != Role.ADMIN)) {
             return "redirect:/boards/detail/" + id;
         }
@@ -114,6 +124,7 @@ public class BoardController {
         return "redirect:/boards/list/basic";
     }
 
+    //投稿のいいねカウント増加
     @GetMapping("like/{id}")
     public String like(@PathVariable("id") int id) {
 

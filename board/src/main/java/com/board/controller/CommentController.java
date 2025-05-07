@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
 
+//コメント関連コントローラー
 @Controller
 @RequestMapping("/comment")
 @RequiredArgsConstructor
@@ -25,8 +26,9 @@ public class CommentController {
     private final MemberService memberService;
     private final BoardService boardService;
 
+    //コメント保存
     @GetMapping("save")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated()")//ログイン有無
     private String saveComment(Model model, @RequestParam("boardId") int boardId, @RequestParam("comment") String comments, Principal principal) {
 
         Member member = memberService.MemberInfoByUsername(principal.getName());

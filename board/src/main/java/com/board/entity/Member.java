@@ -19,12 +19,12 @@ public class Member {
 
     private String name;
 
-    @Column(unique = true)
+    @Column(unique = true) //唯一値制約条件
     private String email;
 
     private String password;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING) //Enum値を文字列で保存
     private Role role;
 
     @Builder

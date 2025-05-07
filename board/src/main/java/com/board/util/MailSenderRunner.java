@@ -15,6 +15,7 @@ public class MailSenderRunner {
 
     private final JavaMailSender mailSender;
 
+    //Propertiesで設定された値
     @Value("${spring.mail.username}")
     private String from;
 
@@ -22,17 +23,18 @@ public class MailSenderRunner {
 
         Random random = new Random();
 
+        //111111~999998の認証番号生成
         int certify = random.nextInt(888888) + 111111;
 
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(from);
-        message.setTo(email);
-        message.setSubject("認証番号");
+        message.setFrom(from); //メール発信者
+        message.setTo(email); //メール受信者
+        message.setSubject("認証番号"); //メールのタイトル
         String content = "認証番号は : " + certify;
-        message.setText(content);
-        message.setSentDate(new Date());
+        message.setText(content); //メールの内容
+        message.setSentDate(new Date()); //メール発信時間
 
-        mailSender.send(message);
+        mailSender.send(message); //メール発信
 
         String num = Integer.toString(certify);
 

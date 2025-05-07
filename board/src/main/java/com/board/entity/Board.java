@@ -11,14 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name="board")
+@Table(name="board") //データベースで「board」テーブル生成
 @NoArgsConstructor
 @Data
 public class Board {
 
     @Id
     @Column(name = "board_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) //自動的に１づつ増加
     private int id;
 
     private String title;
@@ -36,11 +36,11 @@ public class Board {
     private int viewCount;
     private int likeCount;
 
-    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE) //関係設定
     @OrderBy("id asc")
     private List<Comment> comments = new ArrayList<>();
 
-    @PrePersist
+    @PrePersist //生成時、「viewcount」と「likecount」を０で設定
     public void prePersist() {
         this.viewCount = 0;
         this.likeCount = 0;

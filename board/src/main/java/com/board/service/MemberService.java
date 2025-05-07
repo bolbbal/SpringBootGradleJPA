@@ -24,22 +24,25 @@ public class MemberService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final CommentRepository commentRepository;
 
+    //該当メールを検査
     public Member findByEmail(String email) {
         return memberRepository.findByEmail(email);
     }
 
+    //新規会員情報保存
     public void saveMember(MemberDto memberDto) {
 
         Member member = Member.builder()
                 .name(memberDto.getName())
                 .email(memberDto.getEmail())
-                .password(passwordEncoder.encode(memberDto.getPassword()))
+                .password(passwordEncoder.encode(memberDto.getPassword())) //パスワード暗号化
                 .role(Role.USER)
                 .build();
 
         memberRepository.save(member);
     }
 
+    //ログインすると、UserDetails生成
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
@@ -56,10 +59,12 @@ public class MemberService implements UserDetailsService {
                 .build();
     }
 
+    //該当メールを持っているユーザーの情報呼び出し
     public Member MemberInfoByUsername(String email) throws UsernameNotFoundException {
         return memberRepository.findByEmail(email);
     }
 
+    //該当ユーザーの名前変更
     @Transactional
     public void updateMemberInfoByUsername(String email, String newName) throws UsernameNotFoundException {
 
@@ -69,6 +74,7 @@ public class MemberService implements UserDetailsService {
 
     }
 
+    //パスワード一致確認
     public boolean passwordChkByUsername(String email, String password) throws UsernameNotFoundException {
 
         Member member = memberRepository.findByEmail(email);
@@ -77,6 +83,7 @@ public class MemberService implements UserDetailsService {
 
     }
 
+    //パスワード変更
     @Transactional
     public void updatePasswordByUsername(String email, String newPassword) throws UsernameNotFoundException {
 
@@ -86,6 +93,7 @@ public class MemberService implements UserDetailsService {
 
     }
 
+    //会員退会
     @Transactional
     public boolean deleteMember(String email) {
 

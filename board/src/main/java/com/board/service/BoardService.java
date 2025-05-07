@@ -33,28 +33,29 @@ public class BoardService {
 
         Page<Board> boards;
 
-        if(keyword == null || keyword.isEmpty()) {
+        if(type.equals("title") && !keyword.isEmpty()){ //タイトル検索
 
-            boards = boardRepository.findAllByOrderByIdDesc(pageable);
-
-        } else if(type.equals("title") && !keyword.isEmpty()){
-
+            //タイトルでキーワードがある投稿を降順にページング照会
             boards = boardRepository.findByTitleContainingOrderByIdDesc(keyword, pageable);
 
-        } else if(type.equals("content") && !keyword.isEmpty()) {
+        } else if(type.equals("content") && !keyword.isEmpty()) { //内容検索
 
+            //内容でキーワードがある投稿を降順にページング照会
             boards = boardRepository.findByContentContainingOrderByIdDesc(keyword, pageable);
 
-        } else {
+        } else { //検索ではない場合
 
+            //投稿を降順にページング照会
             boards = boardRepository.findAllByOrderByIdDesc(pageable);
 
         }
 
+        //BoardのエンティティをBoardDtoで変換
         return boards.map(board -> {
 
             BoardDto dto = modelMapper.map(board, BoardDto.class);
 
+            //投稿のコメント数照会
             int commentCount = commentRepository.countByBoardId(board.getId());
             dto.setCommentCount(commentCount);
 
@@ -62,15 +63,18 @@ public class BoardService {
         });
     }
 
+    //投稿照会時、表示する内容
     public BoardDto detailBoard(int id) {
 
         Board board = boardRepository.findById(id);
 
+        //照会数１増加
         board.setViewCount(board.getViewCount() + 1);
         boardRepository.save(board);
 
         BoardDto boardDto = modelMapper.map(board, BoardDto.class);
 
+        //前の投稿タイトルとID
         List<Board> prevBoard = boardRepository.findPrevBoardById(id);
         if (!prevBoard.isEmpty()) {
             Board prev = prevBoard.get(0);
@@ -78,6 +82,7 @@ public class BoardService {
             boardDto.setPrevTitle(prev.getTitle());
         }
 
+        //次の投稿タイトルとID
         List<Board> nextBoard = boardRepository.findNextBoardById(id);
         if (!nextBoard.isEmpty()) {
             Board next = nextBoard.get(0);
@@ -85,10 +90,12 @@ public class BoardService {
             boardDto.setNextTitle(next.getTitle());
         }
 
+        //投稿のコメント
         List<Comment> comments = board.getComments();
         List<CommentDto> commentDtos = new ArrayList<>();
 
         for(Comment comment : comments) {
+
             CommentDto commentDto = new CommentDto(comment);
 
             commentDtos.add(commentDto);
@@ -101,15 +108,13 @@ public class BoardService {
 
     }
 
+    //データベースで保存された投稿を呼び出し
     public Board findById(int id) {
         return boardRepository.findById(id);
     }
 
-    public Board forUpdateBoard(int id) {
-        return boardRepository.findById(id);
-    }
-
-    @Transactional
+    //投稿の内容変更
+    @Transactional //例外発生時ロールバック
     public void updateBoard(int id, String title, String content) {
 
         Board board = boardRepository.findById(id);
@@ -120,10 +125,12 @@ public class BoardService {
 
     }
 
+    //投稿の削除
     public void deleteBoard(int id) {
         boardRepository.deleteById(id);
     }
 
+    //投稿のいいね数変更
     public void likeCountUpdate(int id) {
         Board board = findById(id);
         board.setLikeCount(board.getLikeCount() + 1);

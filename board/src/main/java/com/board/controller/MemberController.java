@@ -13,10 +13,10 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 
+//ユーザー関連コントローラー
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/members")
@@ -25,6 +25,7 @@ public class MemberController {
     private final MemberService memberService;
     private final MailSenderRunner mailSenderRunner;
 
+    //新規登録ページ
     @GetMapping("signUp")
     public String signUpPage(Model model) {
 
@@ -33,8 +34,10 @@ public class MemberController {
         return "member/sign_up";
     }
 
+    //認証番号保存
     private String certify = "";
 
+    //認証番号送信
     @PostMapping("emailSend")
     @ResponseBody
     public Map<String, Boolean> emailSend(Model model, @RequestParam("email") String email) {
@@ -43,12 +46,12 @@ public class MemberController {
 
         boolean isExist = false;
 
-        Member member = memberService.findByEmail(email);
+        Member member = memberService.findByEmail(email); //データベースで入力されたメール検査
 
         if(member == null) {
             isExist = true;
 
-            certify = mailSenderRunner.sendMail(email);
+            certify = mailSenderRunner.sendMail(email); //認証番号送信
         }
 
         System.out.println(certify);
@@ -59,6 +62,7 @@ public class MemberController {
 
     }
 
+    //認証番号検査
     @PostMapping("certifyChk")
     @ResponseBody
     public Map<String, Boolean> certifyChk(Model model, @RequestParam("certifyChk") int certifyChk) {
@@ -69,6 +73,7 @@ public class MemberController {
 
         String certifyNum = Integer.toString(certifyChk);
 
+        //送信した認証番号と入力された認証番号の一致有無確認
         if(certify.equals(certifyNum)) {
             isTrue = true;
         }
@@ -79,6 +84,7 @@ public class MemberController {
 
     }
 
+    //ユーザー情報保存
     @PostMapping("saveMember")
     public String saveMember(@Valid MemberDto memberDto, BindingResult bindingResult) {
 
@@ -91,59 +97,54 @@ public class MemberController {
         return "member/login";
     }
 
+    //ログインページ
     @GetMapping("login")
     public String loginPage(Model model) {
         return "member/login";
     }
 
+    //ログイン失敗時
     @GetMapping("login/error")
     public String loginError(Model model) {
         return "member/login";
     }
 
-    @GetMapping("logout")
-    public String logout(Model model) {return "member/login";}
-
+    //マイページ
     @GetMapping("myPage")
     public String myPage(Model model) {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        if(auth == null || !auth.isAuthenticated() || auth.getPrincipal().equals("anonymousUser")) {
-            return "";
-        } else {
+        String email = auth.getName();
 
-            String email = auth.getName();
-            model.addAttribute("member", memberService.MemberInfoByUsername(email));
+        //セッションでユーザーの情報検索
+        model.addAttribute("member", memberService.MemberInfoByUsername(email));
 
-            return "member/myPage";
-        }
-
+        return "member/myPage";
     }
 
+    //変わったユーザー情報保存
     @PostMapping("infoChange")
     public String infoChange(Model model, @RequestParam String name) {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        if(auth == null || !auth.isAuthenticated() || auth.getPrincipal().equals("anonymousUser")) {
-            return "";
-        } else {
+        String email = auth.getName();
+        memberService.updateMemberInfoByUsername(email, name);
+        model.addAttribute("member", memberService.MemberInfoByUsername(email));
 
-            String email = auth.getName();
-            memberService.updateMemberInfoByUsername(email, name);
-            model.addAttribute("member", memberService.MemberInfoByUsername(email));
+        return "member/myPage";
 
-            return "member/myPage";
-        }
     }
 
+    //パスワード検査ページ
     @GetMapping("passwordChk")
     public String passwordChkPage(Model model) {
 
         return "member/passwordChk";
     }
 
+    //パスワード検査実行
     @PostMapping("passwordChk")
     @ResponseBody
     public boolean passwordChk(Model model, @RequestParam String password, Authentication auth) {
@@ -153,11 +154,13 @@ public class MemberController {
         return memberService.passwordChkByUsername(email, password);
     }
 
+    //パスワード編集ページ
     @GetMapping("passwordChange")
     public String passwordChangePage(Model model) {
         return "member/passwordChange";
     }
 
+    //パスワード編集
     @PostMapping("passwordChange")
     public String passwordChange(Model model, @RequestParam String password, Authentication auth) {
 
@@ -168,6 +171,7 @@ public class MemberController {
         return "redirect:/members/logout";
     }
 
+    //会員退会
     @PostMapping("delete")
     @ResponseBody
     public boolean deleteMember(Authentication auth) {

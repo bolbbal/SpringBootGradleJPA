@@ -11,6 +11,7 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
 
+    //コメント保存
     public void saveComment(Comment comment) {
         commentRepository.save(comment);
     }
