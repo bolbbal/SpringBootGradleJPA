@@ -4,16 +4,23 @@
       layout:decorate="~{layouts/layout}">
 <div layout:fragment="content">
   <section class="section_height">
+    <!--ページ名前-->
     <div class="container page_title">
       <div class="col-md-12">
         <h1>情報編集</h1>
       </div>
     </div>
 
+    <!--メインコンテンツ-->
     <div class="container myPageForm">
       <div class="col-md-12">
+        <!--ユーザー情報編集欄-->
         <form name="infoChange" method="post" action="/members/infoChange">
+
+          <!--データ処理のためCSRFトークン送信-->
           <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+          <!--ユーザー情報表示-->
           <table class="form_table">
             <tr>
               <th><label th:for="name">名前</label></th>
@@ -39,18 +46,24 @@
     </div>
   </section>
 
+  <!--会員退会確認（Bootstrapのモダール使用）-->
   <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
+
+          <!--モダールの上段-->
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
           <h4 class="modal-title" id="myModalLabel">会員退会</h4>
         </div>
+
+        <!--パスワード確認-->
         <div class="modal-body">
           <p>パスワ―ドを入力してください</p>
           <input type="password" id="deletePassword" placeholder="password" class="form-control" />
+          <!--パスワードが違う場合、案内表示-->
           <div id="deletePasswordMsg"></div>
         </div>
         <div class="modal-footer">
@@ -66,61 +79,72 @@
   <script th:inline="javascript">
 
     $(function() {
-		    $("#withdraw").on("click", function() {
-		        $("#myModal").modal('show');
-		    });
 
-		    $("#confirmDelete").on("click", function() {
-		        if (!$("#deletePassword").val()) {
-		            $("#deletePasswordMsg").html("<span style='color:#f00;'>パスワ―ドを入力してください</span>");
-		            $("#deletePassword").focus();
-		            return;
-		        }
+        //「退会」ボタンクリックすると、モダール表示
+        $("#withdraw").on("click", function() {
+            $("#myModal").modal('show');
+        });
 
-		        const csrfHeader = $('meta[name="_csrf_header"]').attr('content');
-                const csrfToken = $('meta[name="_csrf"]').attr('content');
+        //「確認」ボタンクリックすると、実行
+        $("#confirmDelete").on("click", function() {
 
-                let password = $("#deletePassword").val();
+            //パスワード入力可否確認
+            if (!$("#deletePassword").val()) {
+                $("#deletePasswordMsg").html("<span style='color:#f00;'>パスワ―ドを入力してください</span>");
+                $("#deletePassword").focus();
+                return;
+            }
 
-		        $.ajax({
-		            type: 'post',
-		            url: '/members/passwordChk',
-		            beforeSend: function (xhr) {
-                      xhr.setRequestHeader(csrfHeader, csrfToken);
-                    },
-		            data: { password : password },
-		            success: function(data) {
-		                if (data === true) {
-		                	if (confirm("本当に退会しますか？")) {
-		                        $.ajax({
-		                            type: 'post',
-		                            url: '/members/delete',
-		                            beforeSend: function (xhr) {
-                                      xhr.setRequestHeader(csrfHeader, csrfToken);
-                                    },
-		                            data: { },
-		                            success: function(data) {
-		                                if (data === true) {
-		                                    alert("退会が完了しました");
-		                                    $("#myModal").modal('hide');
-		                                    window.location.href = '/members/logout';
-		                                }
-		                            },
-		                            error: function() {
-		                                alert("エラーが発生しました。再度お試しください1");
-		                            }
-		                        });
-		                    } else {
-		                        $("#myModal").modal('hide');
-		                    }
-		                }
-		            },
-		            error: function() {
-		                alert("エラーが発生しました。再度お試しください2");
-		            }
-		        });
-		    });
-		});
+            //CSRFトークンとヘッダー
+            const csrfHeader = $('meta[name="_csrf_header"]').attr('content');
+            const csrfToken = $('meta[name="_csrf"]').attr('content');
+
+            let password = $("#deletePassword").val();
+
+            //パスワード確認
+            $.ajax({
+                type: 'post',
+                url: '/members/passwordChk',
+                beforeSend: function (xhr) {
+                  xhr.setRequestHeader(csrfHeader, csrfToken);
+                },
+                data: { password : password },
+                success: function(data) {
+                    //パスワードが一致
+                    if (data === true) {
+                        //最終確認
+                        if (confirm("本当に退会しますか？")) {
+                            //実際退会処理
+                            $.ajax({
+                                type: 'post',
+                                url: '/members/delete',
+                                beforeSend: function (xhr) {
+                                  xhr.setRequestHeader(csrfHeader, csrfToken);
+                                },
+                                data: { },
+                                success: function(data) {
+                                    if (data === true) {
+                                        alert("退会が完了しました"); //退会完了案内
+                                        $("#myModal").modal('hide'); //モダール隠す
+                                        window.location.href = '/members/logout'; //ログアウト処理
+                                    }
+                                },
+                                error: function() {
+                                    alert("エラーが発生しました。再度お試しください1");
+                                }
+                            });
+                            //退会キャンセル
+                        } else {
+                            $("#myModal").modal('hide'); //モダール隠す
+                        }
+                    }
+                },
+                error: function() {
+                    alert("エラーが発生しました。再度お試しください2");
+                }
+            });
+        });
+    });
 
   </script>
 </div>

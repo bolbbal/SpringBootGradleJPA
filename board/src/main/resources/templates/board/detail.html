@@ -4,14 +4,17 @@
       layout:decorate="~{layouts/layout}">
 <div layout:fragment="content">
   <section class="section_height">
+    <!--ページ名前-->
     <div class="container page_title">
       <div class="col-md-12">
         <h1>投稿</h1>
       </div>
     </div>
 
+    <!--メインコンテンツ-->
     <div class="container">
       <div class="col-md-12">
+        <!--投稿詳細-->
         <h3 th:text="${board.title}" class="text-center">title</h3>
         <div class="text-center">
           <span th:text="'作成者：' + ${board.writer}">nickname</span>
@@ -23,17 +26,23 @@
         <div class="container board_content">
           <p th:text="${board.content}"></p>
         </div>
+
+        <!--いいねボタン-->
         <div class="container text-center like_button">
           <button type="button" th:onclick="|location.href='@{/boards/like/{id}(id=${board.id})}'|">いいね</button>
           <span th:text="${board.likeCount}">likecount</span>
         </div>
+
+        <!--編集・削除ボタン-->
         <div class="container">
           <button type="button" th:onclick="|location.href='@{/boards/update/{id}(id=${board.id})}'|"class="text-left">編集</button>
           <form th:action="@{/boards/delete/{id}(id=${board.id})}" method="post">
             <button type="submit" class="text-right">削除</button>
           </form>
         </div>
+
         <div class="container another_board">
+          <!--以前投稿情報-->
           <th:block th:if="${board.prevId != null}">
             <a th:href="@{/boards/detail/{id}(id=${board.prevId})}"　class="text-left">&lt; 以前
               <span th:text="${board.prevTitle}" class="text-left"></span>
@@ -43,6 +52,7 @@
               <span th:text="前の投稿がありません。" class="text-left"></span>
           </th:block>
 
+          <!--以後投稿情報-->
           <th:block th:if="${!(board.nextId != null)}"　class="text-right">
               <span th:text="次の投稿がありません。" class="text-right"></span>
           </th:block>
@@ -55,6 +65,7 @@
       </div>
     </div>
 
+    <!--コメント作成欄-->
     <div class="container text-center">
       <form method="get" action="/comment/save" name="save">
         <input type="hidden" name="boardId" th:value="${board.id}">
@@ -63,6 +74,7 @@
       </form>
     </div>
 
+    <!--該当投稿のコメント-->
     <div class="container">
       <h4>Comments</h4>
       <th:block th:each="comments, iterStat:${board.comments}">

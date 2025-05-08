@@ -4,16 +4,23 @@
       layout:decorate="~{layouts/layout}">
 <div layout:fragment="content">
   <section class="section_height">
+    <!--ページ名前-->
     <div class="container page_title">
       <div class="col-md-12">
         <h1>ログイン</h1>
       </div>
     </div>
 
+    <!--メインコンテンツ-->
     <div class="container loginForm">
       <div class="col-md-12">
+        <!--ログイン欄-->
         <form name="login" method="post" action="/members/login">
+
+          <!--データ処理のためCSRFトークン送信-->
           <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+          <!--IDとパスワード入力-->
           <table class="form_table">
             <tr>
               <th>メール</th>

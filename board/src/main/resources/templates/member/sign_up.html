@@ -4,14 +4,17 @@
       layout:decorate="~{layouts/layout}">
 <div layout:fragment="content">
   <section class="section_height">
+    <!--ページ名前-->
     <div class="container page_title">
       <div class="col-md-12">
         <h1>新規登録</h1>
       </div>
     </div>
 
+    <!--メインコンテンツ-->
     <div class="container">
       <div class="col-md-12">
+        <!--会員情報入力欄-->
         <form name="signUp" method="post" action="/members/saveMember" th:object="${memberDto}" onsubmit="return check();">
           <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
           <table class="form_table">
@@ -19,6 +22,7 @@
               <th><label th:for="name">名前</label></th>
               <td>
                 <input type="text" th:field="*{name}">
+                <!--＠Validアノテーションを通じて有効性検査後、メッセージ表示-->
                 <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
               </td>
             </tr>
@@ -27,8 +31,10 @@
               <th><label th:for="email">メール</label></th>
               <td>
                 <input type="email" th:field="*{email}" id="email">
+                <!--入力されたメールに認証番号送信-->
                 <button type="button" name="emailSend" id="emailSend">認証番号送信</button>
                 <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+                <!--データベースで同じメールがあると表示-->
                 <p id="emailChkMessage"></p>
               </td>
 
@@ -37,6 +43,7 @@
             <tr>
               <th><label th:for="certify">認証番号</label></th>
               <td>
+                <!--送信した認証番号確認-->
                 <input type="text" name="certify" id="certify">
                 <button type="button" name="certifyChk" id="certifyChk">認証番号確認</button>
                 <p id="certifyChkMessage"></p>
@@ -47,6 +54,7 @@
               <th><label th:for="password">パスワード</label></th>
               <td>
                 <input type="password" th:field="*{password}" id="password">
+                <!--＠Validアノテーションを通じて有効性検査後、メッセージ表示-->
                 <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
               </td>
             </tr>
@@ -75,10 +83,12 @@
 <div layout:fragment="script">
   <script th:inline="javascript">
 
+    //確認すること
     let emailChkValue = 1;
     let certifyChkValue = 1;
     let passwordChkValue = 1;
 
+    //メール確認
     $(function () {
 
       const csrfHeader = $('meta[name="_csrf_header"]').attr('content');
@@ -88,11 +98,13 @@
 
         const email = $("#email").val();
 
+        //メールの形確認
         if(!email.includes('@')) {
           $("#emailChkMessage").text("メールの形で入力してください。");
           return;
         }
 
+        //データベースで同じメール確認
         $.ajax({
           type: 'POST',
           url: '/members/emailSend',
@@ -101,10 +113,11 @@
           },
           data: { email : email },
           success: function (data) {
+            //同じメールがない場合
             if (data.success) {
-              $("#emailChkMessage").text("入力されたメールで認証番号を送信しました。");
+              $("#emailChkMessage").text("入力されたメールで認証番号を送信しました。"); //認証番号送信
               emailChkValue = 0;
-            } else {
+            } else {　//同じメールがある場合
               $("#emailChkMessage").text("もう使用されているメールです。");
             }
           },
@@ -114,10 +127,12 @@
         });
       });
 
+      //認証番号確認
       $("#certifyChk").on('click', function () {
 
         var certifyChk = $("#certify").val();
 
+        //入力された認証番号確認
         $.ajax({
           type: 'POST',
           url: '/members/certifyChk',
@@ -126,10 +141,11 @@
           },
           data: { certifyChk : certifyChk },
           success: function (data) {
+            //一致する場合
             if (data.success) {
               $("#certifyChkMessage").text("認証が完了されました。");
               certifyChkValue = 0;
-            } else {
+            } else { //一致しなかった場合
               $("#certifyChkMessage").text("認証番号を確認してください。");
             }
           },
@@ -139,21 +155,24 @@
         });
       });
 
+      //パスワード確認
       $("#passwordChk").on('input', function () {
 
         var password = $("#password").val();
         var passwordChk = $("#passwordChk").val();
 
+        //一致した場合
         if(password == passwordChk) {
           $("#passwordChkMessage").text("パスワードが一致します。");
           passwordChkValue = 0;
-        } else {
+        } else { //一致しなかった場合
           $("#passwordChkMessage").text("パスワードが一致しません。");
         }
 
       });
     });
 
+    //使用できるメール、認証番号、パスワード全て一致した場合だけ登録可能
     function check() {
         if(emailChkValue === 1) {
           alert("メールを認証してください。");

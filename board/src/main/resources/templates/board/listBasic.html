@@ -4,14 +4,17 @@
       layout:decorate="~{layouts/layout}">
 <div layout:fragment="content">
     <section class="section_height">
+        <!--ページ名前-->
         <div class="container page_title">
             <div class="col-md-12">
                 <h1>全体</h1>
             </div>
         </div>
 
+        <!--メインコンテンツ-->
         <div class="container board_list">
             <table class="post_list form_table">
+                <!--投稿表示形式-->
                 <tr>
                     <th>番号</th>
                     <th>タイトル</th>
@@ -22,10 +25,12 @@
                     <th>コメント</th>
                 </tr>
 
+                <!--投稿がない場合-->
                 <tr>
                     <th th:if="boards == null">作成された投稿がありません。</th>
                 </tr>
 
+                <!--投稿表示-->
                 <tr th:each="board, iterStat:${boards}">
                     <td th:text="${board.id}"></td>
                     <td><a th:href="@{/boards/detail/{id}(id=${board.id})}" th:text="${board.title}"></a></td>
@@ -37,14 +42,20 @@
                 </tr>
             </table>
         </div>
+
+        <!--投稿作成ボタン-->
         <div class="container text-right">
             <button type="button" onclick="window.location.href='/boards/write'">投稿</button>
         </div>
 
+        <!--ページング-->
         <div class="container text-center">
+
+            <!--以前ページがあると左方向のボタン表示-->
             <a th:if="${page.hasPrevious()}"
                th:href="@{/boards/list/basic(page=${currentPage - 1}, type=${type}, keyword=${keyword ?: ''})}">&lt;</a>
 
+            <!--一つのページに全ての投稿を表示できなかった場合のページング-->
             <span th:if="${page != null and page.totalPages > 1}"
                   th:each="i : ${#numbers.sequence(1, page.totalPages)}">
                 <a th:href="@{/boards/list/basic(page=${i}, type=${type}, keyword=${keyword ?: ''})}"
@@ -52,6 +63,7 @@
                    th:classappend="${i == currentPage} ? 'active' : ''"></a>
             </span>
 
+            <!--以後ページがあると右方向のボタン表示-->
             <a th:if="${page.hasNext()}"
                th:href="@{/boards/list/basic(page=${currentPage + 1}, type=${type}, keyword=${keyword ?: ''})}">&gt;</a>
         </div>
