@@ -69,7 +69,7 @@
     <div class="container text-center">
       <form method="get" action="/comment/save" name="save">
         <input type="hidden" name="boardId" th:value="${board.id}">
-        <textarea name="comment" style="height : 100px;"></textarea>
+        <textarea name="comment" style="height : 100px;" required></textarea>
         <button type="submit">登録</button>
       </form>
     </div>

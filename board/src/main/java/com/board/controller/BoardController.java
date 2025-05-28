@@ -36,6 +36,8 @@ public class BoardController {
                             @RequestParam(value = "type", defaultValue = "title") String type, //検索のオプションを設定
                             @RequestParam(value = "keyword", required = false) String keyword) {
 
+        keyword = keyword != null ? keyword.trim() : null;
+
         Pageable pageable = PageRequest.of(page - 1, size); //実際ページを設定
         Page<BoardDto> boardPage = boardService.listBoard(pageable, type, keyword); //該当ページの投稿リスト
 
@@ -85,10 +87,14 @@ public class BoardController {
     @PreAuthorize("isAuthenticated()")
     public String updatePage(Model model, @PathVariable("id") int id, Principal principal) {
 
+        if(principal == null) {
+            return "redirect:/boards/detail/" + id;
+        }
         Board board = boardService.findById(id);
+        Member member = memberService.MemberInfoByUsername(principal.getName());
 
         //作成者検査
-        if(principal == null || !principal.getName().equals(board.getWriter())) {
+        if(!member.getName().equals(board.getWriter())) {
             return "redirect:/boards/detail/" + id;
         }
 
@@ -111,11 +117,15 @@ public class BoardController {
     @PreAuthorize("isAuthenticated()")
     public String delete(Model model, @PathVariable("id") int id, Principal principal) {
 
+        if(principal == null) {
+            return "redirect:/boards/detail/" + id;
+        }
+
         Board board = boardService.findById(id);
         Member member = memberService.MemberInfoByUsername(principal.getName());
 
         //作成者と管理者が削除できる
-        if(principal == null || (!principal.getName().equals(board.getWriter()) && member.getRole() != Role.ADMIN)) {
+        if(!member.getName().equals(board.getWriter()) && member.getRole() != Role.ADMIN) {
             return "redirect:/boards/detail/" + id;
         }
 

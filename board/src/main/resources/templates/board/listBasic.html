@@ -35,7 +35,7 @@
                     <td th:text="${board.id}"></td>
                     <td><a th:href="@{/boards/detail/{id}(id=${board.id})}" th:text="${board.title}"></a></td>
                     <td th:text="${board.writer}" style="text-align:none;"></td>
-                    <td th:text="${#temporals.format(board.modiDate, 'yyyy-MM-dd')}"></td>
+                    <td th:text="${board.modiDate != null ? #temporals.format(board.modiDate, 'yyyy-MM-dd') : #temporals.format(board.regDate, 'yyyy-MM-dd')}"></td>
                     <td th:text="${board.viewCount}"></td>
                     <td th:text="${board.likeCount}"></td>
                     <td th:text="${board.commentCount}"></td>

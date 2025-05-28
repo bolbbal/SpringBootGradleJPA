@@ -33,12 +33,12 @@ public class BoardService {
 
         Page<Board> boards;
 
-        if(type.equals("title") && !keyword.isEmpty()){ //タイトル検索
+        if(type.equals("title") && keyword != null){ //タイトル検索
 
             //タイトルでキーワードがある投稿を降順にページング照会
             boards = boardRepository.findByTitleContainingOrderByIdDesc(keyword, pageable);
 
-        } else if(type.equals("content") && !keyword.isEmpty()) { //内容検索
+        } else if(type.equals("content") && keyword != null) { //内容検索
 
             //内容でキーワードがある投稿を降順にページング照会
             boards = boardRepository.findByContentContainingOrderByIdDesc(keyword, pageable);
