@@ -3,6 +3,7 @@ package com.board.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
@@ -27,6 +28,7 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name = "member_id")
+    @ToString.Exclude
     private Member member;
 
     @CreationTimestamp

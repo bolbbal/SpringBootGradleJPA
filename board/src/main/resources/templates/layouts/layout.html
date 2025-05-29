@@ -29,13 +29,13 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
 
     <!--共通ヘッダー-->
     <div th:replace="fragments/header::header"></div>
 
     <!--ページ別コンテンツ-->
-    <div layout:fragment="content" class="content"></div>
+    <div layout:fragment="content" class="content flex-fill my-4"></div>
 
     <!--共通フッター-->
     <div th:replace="fragments/footer::footer"></div>

@@ -17,4 +17,8 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
 
     //該当ユーザーが作成したコメントの削除
     void deleteByMemberId(Long memberId);
+
+    Comment findById(int id);
+
+    void deleteById(int id);
 }

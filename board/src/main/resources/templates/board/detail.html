@@ -3,7 +3,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/layout}">
 <div layout:fragment="content">
-  <section class="section_height">
+  <section>
     <!--ページ名前-->
     <div class="container page_title">
       <div class="col-md-12">
@@ -18,7 +18,7 @@
         <h3 th:text="${board.title}" class="text-center">title</h3>
         <div class="text-center">
           <span th:text="'作成者：' + ${board.writer}">nickname</span>
-          <span th:text="' | 作成日：' + ${#temporals.format(board.modiDate, 'yyyy-MM-dd')}">date</span>
+          <span th:text="' | 作成日：' + ${board.modiDate != null ? #temporals.format(board.modiDate, 'yyyy-MM-dd') : #temporals.format(board.regDate, 'yyyy-MM-dd')}">date</span>
           <span th:text="' | 一覧数：' + ${board.viewCount}">viewcount</span>
           <span th:text="' | いいね：' + ${board.likeCount}">likecount</span>
           <span th:text="' | コメント：' + ${board.commentCount}">commentcount</span>
@@ -77,13 +77,67 @@
     <!--該当投稿のコメント-->
     <div class="container">
       <h4>Comments</h4>
-      <th:block th:each="comments, iterStat:${board.comments}">
-        <h5 th:text="${comments.commenter}"></h5>
-        <span th:text="${comments.comment}"></span>
-        <span th:text="${#temporals.format(comments.regDate, 'yyyy-MM-dd')}" class="text-right"></span>
+      <th:block th:each="comment, iterStat:${board.comments}">
+        <h5 th:text="${comment.commenter}"></h5>
+        <span th:text="${comment.comment}"></span>
+        <span th:text="${#temporals.format(comment.regDate, 'yyyy-MM-dd')}" class="text-right"></span>
+        <!--編集・削除ボタン-->
+        <div class="container">
+          <button type="button" name="modifyCommentChk" class="modifyCommentChk text-left" th:data-comment-id="${comment.id}">編集</button>
+          <form th:action="@{/comment/delete/{id}(id=${comment.id})}" method="post">
+            <input type="hidden" name="boardId" th:value="${board.id}">
+            <button type="submit" class="text-right">削除</button>
+          </form>
+        </div>
+        <div class="container text-center" th:id="'modify-form-' + ${comment.id}" style="display:none;">
+          <form method="get" th:action="@{/comment/modify/{id}(id=${comment.id})}" name="modify">
+            <input type="hidden" name="boardId" th:value="${board.id}">
+            <textarea name="modifyComment" th:text="${comment.comment}" style="height : 100px;" required></textarea>
+            <button type="submit">編集</button>
+          </form>
+        </div>
       </th:block>
     </div>
   </section>
 
+</div>
+
+<div layout:fragment="script">
+  <script th:inline="javascript">
+
+    $(function () {
+
+    // CSRFトークンとヘッダー
+    const csrfHeader = $('meta[name="_csrf_header"]').attr('content');
+    const csrfToken = $('meta[name="_csrf"]').attr('content');
+
+    const boardId = [[${board.id}]];
+
+    $(".modifyCommentChk").on("click", function () {
+        const id = $(this).data("comment-id");
+
+        // 作成者確認
+        $.ajax({
+            type: 'post',
+            url: '/comment/modifyChk/' + id,
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader(csrfHeader, csrfToken);
+            },
+            data: { boardId: boardId },
+            success: function (data) {
+                // パスワードが一致
+                if (data === "possible") {
+                    $("#modify-form-" + id).slideDown();
+                }
+            },
+            error: function () {
+                alert("エラーが発生しました。再度お試しください");
+            }
+        });
+    });
+
+  });
+
+  </script>
 </div>
 </html>

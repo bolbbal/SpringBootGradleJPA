@@ -17,6 +17,7 @@ public class CommentDto {
     private LocalDateTime regDate;
 
     public CommentDto(Comment comment) {
+        this.id = comment.getId();
         this.boardId = comment.getBoard().getId();
         this.comment = comment.getComment();
         this.commenter = comment.getMember().getName();

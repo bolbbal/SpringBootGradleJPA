@@ -26,8 +26,8 @@
                 </tr>
 
                 <!--投稿がない場合-->
-                <tr>
-                    <th th:if="boards == null">作成された投稿がありません。</th>
+                <tr th:if="${#lists.isEmpty(boards)}">
+                    <th colspan="7">作成された投稿がありません。</th>
                 </tr>
 
                 <!--投稿表示-->

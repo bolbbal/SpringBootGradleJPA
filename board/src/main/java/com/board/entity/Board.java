@@ -3,6 +3,7 @@ package com.board.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -38,6 +39,7 @@ public class Board {
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE) //関係設定
     @OrderBy("id asc")
+    @ToString.Exclude
     private List<Comment> comments = new ArrayList<>();
 
     @PrePersist //生成時、「viewcount」と「likecount」を０で設定
